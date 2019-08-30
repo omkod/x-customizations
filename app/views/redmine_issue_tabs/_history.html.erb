@@ -1,0 +1,42 @@
+<%
+  tab ||= {}
+  issue ||= tab[:issue] || nil
+  reply_links = Redmine::VERSION.to_s >= '3.3.0' ? issue.try(:notes_addable?) : authorize_for('issues', 'edit')
+  journals ||= tab[:journals] || []
+  prefix ||= tab[:prefix] || 'notes'
+  show_details ||= tab[:show_details] || false
+%>
+<% journals.each_with_index do |journal, index| %>
+  <% index = index + 1 %>
+  <div id="change-<%= journal.id %>" class="<%= journal.css_classes %>">
+    <div id="<%= prefix %>-<%= index %>">
+      <h4><a href="#<%= prefix %>-<%= index %>" class="journal-link">#<%= index %></a>
+        <%= avatar(journal.user, :size => "32") %>
+        <%= authoring journal.created_on, journal.user, label: :label_updated_time_by %>
+        <%= content_tag('span', l(:field_is_private), class: 'private') if journal.private_notes? %>
+      </h4>
+
+      <% details = show_details ? journal.visible_details : journal.rit_journal_attachments %>
+
+      <% if details.any? %>
+        <ul class="details">
+          <% details_to_strings(details).each do |string| %>
+            <li><%= string %></li>
+          <% end %>
+        </ul>
+      <% end %>
+
+      <% if details.any? && Redmine::VERSION.to_s >= '3.2.0' %>
+        <% if Setting.thumbnails_enabled? && (thumbnail_attachments = journal_thumbnail_attachments(journal)).any? %>
+          <div class="thumbnails">
+            <% thumbnail_attachments.each do |attachment| %>
+              <div><%= thumbnail_tag(attachment) %></div>
+            <% end %>
+          </div>
+        <% end %>
+      <% end %>
+      <%= render_notes(issue, journal, reply_links: reply_links) unless journal.notes.blank? %>
+    </div>
+  </div>
+  <%= call_hook(:view_issues_history_journal_bottom, { journal: journal }) %>
+<% end %>
