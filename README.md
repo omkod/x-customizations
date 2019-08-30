@@ -1,4 +1,4 @@
-#Redmine customizations
+# Redmine customizations
 
 **Functions:**
 
@@ -24,7 +24,7 @@ whereis tnef
 // Go to redmine root and make
 bundle update
 
-``
+```
 
 To make TNEF (winmail.dat conversion) working set path to tnef bin here /settings/plugin/x_customizations
 
