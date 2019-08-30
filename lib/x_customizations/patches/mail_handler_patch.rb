@@ -34,7 +34,7 @@ module XCustomization
                     Rails.logger.info("XCustomization: TNEF attached")
                   end
                   rescue Exception => ex
-                    Rails.logger.error { "XCustomization TNEF mail attachment processing error: #{e}"}
+                    Rails.logger.error { "XCustomization TNEF mail attachment processing error: #{eх}"}
                     single_attachment_add(obj, attachment.decoded, "ATTACHMENT_ERROR_" + attachment.filename, user, attachment.mime_type)
                   break
                 end 
